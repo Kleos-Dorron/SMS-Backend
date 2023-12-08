@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SMS_Backend.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace SMS_Backend.DTOs
 {
@@ -21,9 +22,8 @@ namespace SMS_Backend.DTOs
 
         public DateTime DateOfBirth { get; set; }
 
-
+        [Range(0, 150)] // Adjust the range as needed
         public int Age { get; set; }
-
 
         public int ClassroomId { get; set; }
     }

@@ -29,7 +29,9 @@ namespace SMS_Backend.Controllers
             {
                 return NotFound();
             }
-            return await _context.Students.ToListAsync();
+            // Eager loading the associated Classroom
+            var students = await _context.Students.Include(s => s.Classroom).ToListAsync();
+            return students;
         }
 
         // GET: api/Students/5
@@ -40,7 +42,8 @@ namespace SMS_Backend.Controllers
             {
                 return NotFound();
             }
-            var student = await _context.Students.FindAsync(id);
+            // Eager loading the associated Classroom for a specific student
+            var student = await _context.Students.Include(s => s.Classroom).FirstOrDefaultAsync(s => s.StudentId == id);
 
             if (student == null)
             {
@@ -90,7 +93,6 @@ namespace SMS_Backend.Controllers
             {
                 return BadRequest(ModelState);
             }
-
             if (_context.Classrooms == null || !_context.Classrooms.Any(c => c.ClassroomId == studentDTO.ClassroomId))
             {
                 ModelState.AddModelError("ClassroomID", "Invalid ClassroomID");
@@ -105,10 +107,10 @@ namespace SMS_Backend.Controllers
                 ContactNo = studentDTO.ContactNo,
                 EmailAddress = studentDTO.EmailAddress,
                 DateOfBirth = studentDTO.DateOfBirth,
+                Age = studentDTO.Age,
                 ClassroomId = studentDTO.ClassroomId,
-                Age = studentDTO.Age // Assuming you have a method to calculate age
-            };
 
+            };
             _context.Students.Add(student);
             await _context.SaveChangesAsync();
 
